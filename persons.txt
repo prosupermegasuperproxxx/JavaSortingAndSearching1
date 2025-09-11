@@ -1,0 +1,4 @@
+Arnold,18,123
+Victor,20,55
+Andrew,19,76
+Vlad,34,150
