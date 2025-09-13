@@ -6,26 +6,31 @@ public class Person implements Comparable<Person> {
     private final double salary;
     public static final int COUNT_COLUMNS = 3;
 
+    //7. Класс объекта
     private Person(PersonBuilder builder) {
         this.name = builder.name;
         this.age = builder.age;
         this.salary = builder.salary;
     }
 
+
     public String getName() { return name; }
     public int getAge() { return age; }
     public double getSalary() { return salary; }
+
 
     @Override
     public int compareTo(Person other) {
         return Integer.compare(this.age, other.age);
     }
 
+
     @Override
     public String toString() {
         return String.format("Person{name='%s', age=%d, salary=%.2f}",
                 name, age, salary);
     }
+
 
     public static PersonBuilder builder() {
         return new PersonBuilder();
