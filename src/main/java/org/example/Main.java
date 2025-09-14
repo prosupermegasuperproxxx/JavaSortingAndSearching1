@@ -5,6 +5,7 @@ import org.example.model.Person;
 import org.example.search.BinarySearch;
 import org.example.sort.IterativeQuickSortStrategy;
 import org.example.strategy.SortStrategy;
+import org.example.ui.ConsoleUI;
 import org.example.utils.FileUtil;
 import org.example.utils.SortTask;
 import org.example.utils.Threads;
@@ -169,12 +170,13 @@ public class Main {
         System.out.println( 
             System.getProperty("user.dir")
         );
-        CustomList<Person> customList = FileUtil.readPersonsFromFile("persons.txt");
-        performSortingOperations(customList.toList());
+        // пример заполнения коллекции из файла перенести в UI
+ //       CustomList<Person> customList = FileUtil.readPersonsFromFile("persons.txt");
+//        performSortingOperations(customList.toList());
 //        performSearchOperations(customList.toList());
         
-//        ConsoleUI c = new ConsoleUI();
-//        c.start();
+        ConsoleUI c = new ConsoleUI();
+        c.start();
 
 
         if (sortExecutor != null) {

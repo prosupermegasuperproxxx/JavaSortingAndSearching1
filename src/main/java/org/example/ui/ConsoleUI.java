@@ -1,19 +1,24 @@
 package org.example.ui;
 
+import org.example.customcollection.CustomList;
 import org.example.model.Person;
 import org.example.search.SearchService;
+import org.example.sort.BubbleSortStrategy;
+import org.example.sort.IterativeQuickSortStrategy;
+import org.example.sort.MergeSortStrategy;
 import org.example.sort.SortingService;
+import org.example.strategy.SortStrategy;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.Scanner;
-import java.util.Arrays;
 
 public class ConsoleUI {
     private final Scanner scanner;
     private final DataService dataService;
     private final SortingService sortingService;
     private final SearchService searchService;
-    private Person[] dataArray;
+    private List<Person> dataArray;
 
     public ConsoleUI () {
         this.scanner = new Scanner(System.in);
@@ -62,23 +67,23 @@ public class ConsoleUI {
     //2.1 интерфейс меню
     private void printMainMenu() {
         System.out.println("\n--- Main Menu ---");
-        System.out.println("1. Display all data");
-        System.out.println("2. Sorting");
-        System.out.println("3. Searching");
-        System.out.println("4. Output an array to the console");
-        System.out.println("5. Write an array to a fail");
-        System.out.println("To exit, enter 'exit'");
-        System.out.println("Enter choice");
+        System.out.println("1. Заполнение массива");
+        System.out.println("2. Сортировка");
+        System.out.println("3. Найти элемент");
+        System.out.println("4. Вывести в консоль");
+        System.out.println("5. Записать в файл");
+        System.out.println("Выход 'exit'");
+        System.out.println("Введите ваш выбор:");
     }
 
     //2.1 выбор варианта заполнения исходного массива данных (из файла, рандом, вручную)
     //2.5 вопрос о размерности
     private void handleDataInput () {
         System.out.println("\n--- Datainpit ---");
-        System.out.println("1. Manually");
-        System.out.println("2. Random");
-        System.out.println("3. From file");
-        System.out.println("Enter choice");
+        System.out.println("1. Вручную");
+        System.out.println("2. Случайно");
+        System.out.println("3. Из файла");
+        System.out.println("Ваш выбор:");
 
         String inputChoice = scanner.nextLine().trim();
         int size = 0;
@@ -98,37 +103,37 @@ public class ConsoleUI {
             case "3":
                 System.out.println("Enter the path to the file");
                 String pathToFile = scanner.nextLine();
-                this.dataArray = dataService.fillFromFile(pathToFile);
+                this.dataArray = dataService.fillFromFile(pathToFile).toList();
                 break;
             default:
                 System.out.println("Invalid choice.");
         }
 
         if(dataArray != null){
-            System.out.println("The array has been filled. Size: " + dataArray.length);
+            System.out.println("The array has been filled. Size: " + dataArray.size());
         }
     }
 
     //2.7 вопрос о желании найти элемент из консоли
     private void handleSearch() {
         if(dataArray == null){
-            System.out.println("Array is empty. Please fill up the data.");
+            System.out.println("Массив пустой введите что нибудь.");
             return;
         }
-        System.out.println("Enter the search term: ");
+        System.out.println("Введите элемент для поиска: ");
         String key = scanner.nextLine();
     }
 
     //2.3 вывод результат, если выбрали консоль
     private void printArray() {
-        if(dataArray == null||dataArray.length == 0){
+        if(dataArray == null||dataArray.size() == 0){
             System.out.println("Array is empty. Please fill up the data.");
             return;
         }
 
         System.out.println("\n---Array contents---");
-        for (int i = 0; i < dataArray.length; i++){
-            System.out.println(dataArray[i]);
+        for (int i = 0; i < dataArray.size(); i++){
+            System.out.println(dataArray.get(i));
         }
 
     }
@@ -145,35 +150,73 @@ public class ConsoleUI {
 
     //2.4 проверка на поле для сортировки
     private void handleSorting() {
-        if(dataArray == null){
-            System.out.println("Please enter the size of the array");
-            return;
-        }
 
-        System.out.println("Select the field to sort:");
-        System.out.println("1. ID");
-        System.out.println("2. Name");
-        System.out.println("3. According to the assessment");
-        System.out.println("Your choise: ");
+        System.out.println("Выберите сортировку");
+        System.out.println("1. Пузырьковая");
+        System.out.println("2. Быстрая");
+        System.out.println("3. Слияние");
+        System.out.println("4. По четным");
+        System.out.println("Выберите: ");
+        SortStrategy<Person> strategy = null;
+
 
         String fieldChoice = scanner.nextLine();
-        Comparator<Person> comparator = null;
 
         switch (fieldChoice){
             case "1":
-                comparator = Comparator.comparing(Person::getAge);
+                strategy = new BubbleSortStrategy<>();
                 break;
             case "2":
-                comparator = Comparator.comparing(Person::getName);
+                strategy = new IterativeQuickSortStrategy<>();
                 break;
             case "3":
-                comparator = Comparator.comparing(Person::getSalary);
+                strategy = new MergeSortStrategy<>();
+            case "4":
+                // пока нет доделать
+                strategy = null;
             default:
                 System.out.println("Invalid choice.");
                 return;
         }
 
-        sortingService.sortArray(dataArray, comparator);
+        if(dataArray == null){
+            System.out.println("Пожалуйста введите размер массива");
+            return;
+        }
+
+        System.out.println("Выберите поле сортировки:");
+        System.out.println("1. Name");
+        System.out.println("2. Age");
+        System.out.println("3. Salary");
+        System.out.println("4. All Fields");
+        System.out.println("Выберите: ");
+
+        fieldChoice = scanner.nextLine();
+        Comparator<Person> comparator = null;
+
+        switch (fieldChoice){
+            case "1":
+                //comparator = Comparator.comparing(Person::getAge);
+                strategy.setComparator( new Person.NameComparator());
+                break;
+            case "2":
+                //comparator = Comparator.comparing(Person::getName);
+                strategy.setComparator( new Person.AgeComparator());
+                break;
+            case "3":
+                //comparator = Comparator.comparing(Person::getSalary);
+                strategy.setComparator( new Person.SalaryComparator());
+            case "4":
+               // comparator = null;
+                strategy.setComparator( null);
+            default:
+                System.out.println("Invalid choice.");
+                return;
+        }
+
+
+
+        sortingService.sortArray(dataArray, comparator, strategy);
         System.out.println("The sorted array is: ");
         printArray();
     }
