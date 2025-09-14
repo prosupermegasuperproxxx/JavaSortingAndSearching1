@@ -1,6 +1,9 @@
 package org.example.ui;
 
 import org.example.model.Person;
+import org.example.search.SearchService;
+import org.example.sort.SortingService;
+
 import java.util.Comparator;
 import java.util.Scanner;
 import java.util.Arrays;
