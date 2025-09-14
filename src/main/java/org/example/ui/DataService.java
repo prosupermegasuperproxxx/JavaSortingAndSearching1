@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.example.Main.*;
@@ -21,6 +22,7 @@ public class DataService<T> {
 
     //Доделать под коллекцию
     public CustomList<Person> fillFromFile(String pathToFile) {
+//        CustomList<Person> customList = FileUtil.readPersonsFromFile("persons.txt");
         try (Stream<String> lines = Files.lines(Paths.get(pathToFile))) {
             return (CustomList<Person>) lines
                     .map(line -> line.split(","))
@@ -35,7 +37,14 @@ public class DataService<T> {
                                 .salary(salary)
                                 .build();
 
-                    });
+                    }).collect(Collectors.collectingAndThen(
+                            Collectors.toList(),
+                            list -> {
+                                CustomList<Person> customList = new CustomList<>();
+                                customList.addAll(list);
+                                return customList;
+                            }
+                    ));
 
                     //.(Person[]::new);
         }catch (IOException e){

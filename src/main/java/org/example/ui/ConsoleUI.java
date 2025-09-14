@@ -171,9 +171,11 @@ public class ConsoleUI {
                 break;
             case "3":
                 strategy = new MergeSortStrategy<>();
+                break;
             case "4":
                 // пока нет доделать
                 strategy = null;
+                break;
             default:
                 System.out.println("Invalid choice.");
                 return;
@@ -206,9 +208,11 @@ public class ConsoleUI {
             case "3":
                 //comparator = Comparator.comparing(Person::getSalary);
                 strategy.setComparator( new Person.SalaryComparator());
+                break;
             case "4":
                // comparator = null;
                 strategy.setComparator( null);
+                break;
             default:
                 System.out.println("Invalid choice.");
                 return;

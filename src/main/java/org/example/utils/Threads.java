@@ -9,7 +9,6 @@ import java.util.concurrent.Future;
 
 public class Threads<T extends Comparable<T>> {
     private final ExecutorService executor;
-    public static final int MINIMUM_THREADS = 3;
 
     public Threads() {
         this.executor = Executors.newFixedThreadPool(1);
