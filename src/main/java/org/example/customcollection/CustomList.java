@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class CustomList<T> implements Iterable<T> {
+public class CustomList<T> implements Iterable<T>{
 
     public static final int DEFAULT_CAPACITY = 10;
     private Object[] elements;
@@ -47,9 +47,14 @@ public class CustomList<T> implements Iterable<T> {
 
     private void ensureCapacity(int minCapacity) {
         if (minCapacity > elements.length) {
-            int newCapacity = Math.max(elements.length * 2, minCapacity);
-            elements = Arrays.copyOf(elements, newCapacity);
+            grow(minCapacity);
         }
+    }
+
+    private Object[] grow(int minCapacity) {
+        int newCapacity = Math.max(elements.length * 2, minCapacity);
+        elements = Arrays.copyOf(elements, newCapacity);
+        return elements;
     }
 
     public T get(int index) {
@@ -114,5 +119,29 @@ public class CustomList<T> implements Iterable<T> {
     @Override
     public void forEach(Consumer<? super T> action) {
         Iterable.super.forEach(action);
+    }
+
+    public boolean addAll(List<T> list) {
+        Object[] a = list.toArray();
+
+        int numNew = a.length;
+        if (numNew == 0)
+            return false;
+        Object[] elementData;
+        final int s;
+        if (numNew > (elementData = this.elements).length - (s = size))
+            elementData = grow(s + numNew);
+        System.arraycopy(a, 0, elementData, s, numNew);
+        size = s + numNew;
+        return true;
+        
+    }
+    
+    public List<T> toList() {
+        List<T> arrayList = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            arrayList.add((T) elements[i]);
+        }
+        return  arrayList;
     }
 }
