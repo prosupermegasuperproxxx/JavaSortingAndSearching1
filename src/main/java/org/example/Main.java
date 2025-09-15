@@ -3,7 +3,9 @@ package org.example;
 import org.example.customcollection.CustomList;
 import org.example.model.Person;
 import org.example.search.BinarySearch;
+import org.example.sort.BubbleSortStrategy;
 import org.example.sort.IterativeQuickSortStrategy;
+import org.example.sort.MergeSortStrategy;
 import org.example.strategy.SortStrategy;
 import org.example.ui.ConsoleUI;
 import org.example.utils.FileUtil;
@@ -51,14 +53,18 @@ public class Main {
         sortExecutor = new Threads<>();
 
 //        SortStrategy<T> strategy = new BubbleSortStrategy<>();
-        SortStrategy<T> strategy = new IterativeQuickSortStrategy<>();
-        strategy.setComparator((Comparator<T>) new Person.NameComparator());
+//        SortStrategy<T> strategy = new IterativeQuickSortStrategy<>();
+        SortStrategy<T> strategy = new MergeSortStrategy<>();
+//        strategy.setComparator((Comparator<T>) new Person.NameComparator());
+        strategy.setComparator((Comparator<T>) new Person.AgeComparator());
 //        strategy.setComparator((Comparator<T>) new Person.SalaryComparator());
+//        strategy.setComparator(null);
 
 
 
         try {
-            System.out.println("Начало сортировки...");
+            System.out.println("Начало сортировки..." + list.size());
+            System.out.println("Не сортированный список размер: " + list.size());
             List<T> sortedList;
             if(!false) {
                 Future<List<T>> future = sortExecutor.executeSort(list, strategy);
@@ -67,7 +73,8 @@ public class Main {
             else
                 sortedList = new SortTask<>(list, strategy).call();
                                            
-//            System.out.println("Отсортированный список: " + sortedList);
+            System.out.println("Отсортированный список размер : " + sortedList.size());
+            System.out.println("Отсортированный список: " + printList(sortedList));
             System.out.println("Сортировка завершена");
             System.out.println("Использован алгоритм: " + strategy.getStrategyName());
 
@@ -93,9 +100,21 @@ public class Main {
 
         } catch (Exception e) {
             System.out.println("Ошибка при сортировке: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
+    public static <T> String printList(List<T> list){
+
+        String printed = "";
+        StringBuilder sb = new StringBuilder();
+        list.forEach((item) -> {
+            sb.append(item.toString()).append("\n");
+        });
+        
+        printed = "\n" + sb.toString() + "\n";
+        return printed;
+    }
     private static <T extends Comparable<T>> void performSearchOperations(List<T> list) {
         
         System.out.println("\n=== Операции поиска ===");
@@ -171,7 +190,7 @@ public class Main {
             System.getProperty("user.dir")
         );
         // пример заполнения коллекции из файла перенести в UI
- //       CustomList<Person> customList = FileUtil.readPersonsFromFile("persons.txt");
+        CustomList<Person> customList = FileUtil.readPersonsFromFile("persons.txt");
 //        performSortingOperations(customList.toList());
 //        performSearchOperations(customList.toList());
         
