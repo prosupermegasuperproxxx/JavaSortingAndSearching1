@@ -32,6 +32,7 @@ public class EvenNumbersNaturalOrder {
         }
 
         // Сортируем чётные элементы
+        // тут делаем изменения        
         evenElements.sort((a, b) -> {
             Number aVal = getter.apply(a);
             Number bVal = getter.apply(b);
