@@ -95,14 +95,17 @@ public class ConsoleUI {
 
         switch(inputChoice){
             case "1":
-                dataService.fillManually(size);
+                this.dataArray = dataService.fillManually(size).toList();
                 break;
             case "2":
-                dataService.fillRandomly(size);
+                this.dataArray = dataService.fillRandomly(size).toList();
                 break;
             case "3":
-                System.out.println("Enter the path to the file");
+                System.out.println("Введите имя файла и оставьте пустое. Будет использован файл persons.txt");
                 String pathToFile = scanner.nextLine();
+                if(pathToFile.trim().isEmpty()){
+                    pathToFile = "persons.txt";
+                }
                 this.dataArray = dataService.fillFromFile(pathToFile).toList();
                 break;
             default:
@@ -171,9 +174,11 @@ public class ConsoleUI {
                 break;
             case "3":
                 strategy = new MergeSortStrategy<>();
+                break;
             case "4":
                 // пока нет доделать
                 strategy = null;
+                break;
             default:
                 System.out.println("Invalid choice.");
                 return;
@@ -196,27 +201,30 @@ public class ConsoleUI {
 
         switch (fieldChoice){
             case "1":
-                //comparator = Comparator.comparing(Person::getAge);
                 strategy.setComparator( new Person.NameComparator());
                 break;
             case "2":
-                //comparator = Comparator.comparing(Person::getName);
                 strategy.setComparator( new Person.AgeComparator());
                 break;
             case "3":
-                //comparator = Comparator.comparing(Person::getSalary);
                 strategy.setComparator( new Person.SalaryComparator());
+                break;
             case "4":
-               // comparator = null;
+               // сортирует по всем полям;
                 strategy.setComparator( null);
+                break;
             default:
                 System.out.println("Invalid choice.");
                 return;
         }
 
 
+        System.out.println("Не сортированный список размер: " + dataArray.size());
 
-        sortingService.sortArray(dataArray, comparator, strategy);
+        sortingService.sortArray(dataArray, strategy.getComparator(), strategy);
+
+        System.out.println("Отсортированный список размер : " + dataArray.size());
+
         System.out.println("The sorted array is: ");
         printArray();
     }
