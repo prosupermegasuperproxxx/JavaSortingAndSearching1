@@ -118,8 +118,8 @@ public class DataService<T> {
         for (int i = 0; i < size; i++) {
 
             String name = names[random.nextInt(names.length)];
-            int age = random.nextInt(100);
-            double salary = random.nextDouble();
+            int age = random.nextInt(100)+ 1;
+            double salary = random.nextDouble() + 1;
 
             persons.add(Person.builder().name(name)
                     .age(age)
