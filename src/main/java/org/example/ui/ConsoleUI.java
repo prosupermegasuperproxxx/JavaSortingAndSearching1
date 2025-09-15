@@ -34,11 +34,11 @@ public class ConsoleUI {
     public void start(){
         boolean isRunning = true;
 
+
         if(dataArray == null||dataArray.isEmpty()){
             System.out.println("Для начала работы необходимо заполнить массив данных");
             handleDataInput();
         }
-
 
         while(isRunning){
             printMainMenu();
