@@ -35,7 +35,7 @@ public class ConsoleUI {
         boolean isRunning = true;
 
         if(dataArray == null||dataArray.isEmpty()){
-            System.out.println("Для начала работы необходимо заполнить массив данныз");
+            System.out.println("Для начала работы необходимо заполнить массив данных");
             handleDataInput();
         }
 
