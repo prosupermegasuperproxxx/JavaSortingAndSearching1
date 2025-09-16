@@ -1,10 +1,12 @@
 package org.example.model;
 
+import org.example.sort.HasAge;
+
 import java.util.Locale;
 
-public class Person implements Comparable<Person> {
+public class Person implements Comparable<Person>, HasAge {
     private final String name;
-    private final int age;
+    private int age;
     private final double salary;
     public static final int COUNT_COLUMNS = 3;
     
@@ -58,6 +60,10 @@ public class Person implements Comparable<Person> {
         this.salary = builder.salary;
     }
 
+
+    public void setAge(int age) {
+        this.age = age;
+    }
 
     public String getName() { return name; }
     public int getAge() { return age; }

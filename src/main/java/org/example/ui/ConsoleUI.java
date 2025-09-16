@@ -3,10 +3,7 @@ package org.example.ui;
 import org.example.customcollection.CustomList;
 import org.example.model.Person;
 import org.example.search.SearchService;
-import org.example.sort.BubbleSortStrategy;
-import org.example.sort.IterativeQuickSortStrategy;
-import org.example.sort.MergeSortStrategy;
-import org.example.sort.SortingService;
+import org.example.sort.*;
 import org.example.strategy.SortStrategy;
 
 import java.util.Comparator;
@@ -243,10 +240,8 @@ public class ConsoleUI {
                 strategy = new MergeSortStrategy<>();
                 break;
             case "4":
-                // пока нет доделать
-//                strategy = null;
-                throw new UnsupportedOperationException();
-//                break;
+                strategy = new EvenNumbersNaturalOrder<>();
+                break;
             default:
                 System.out.println("Invalid choice.");
                 return;
