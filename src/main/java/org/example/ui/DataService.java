@@ -109,23 +109,26 @@ public class DataService<T> {
 
     //2.1 Заполнение рандомно
     //4.3 Валидация данных
-    public CustomList<Person>  fillRandomly(int size) {
+    public CustomList<Person> fillRandomly(int size) {
         Random random = new Random();
-        // persons = new Person[size];
-        CustomList<Person> persons = new CustomList<>();
         String[] names = {"Артем", "Андрей", "Аслан", "Анна"};
 
-        for (int i = 0; i < size; i++) {
+        CustomList<Person> persons = CustomList.fromStream(
+                Stream.generate(() -> {
 
-            String name = names[random.nextInt(names.length)];
-            int age = random.nextInt(100)+ 1;
-            double salary = random.nextDouble() + 1;
+                    String name = names[random.nextInt(names.length)];
+                    int age = random.nextInt(100) + 1;
+                    double salary = random.nextDouble() + 1;
 
-            persons.add(Person.builder().name(name)
-                    .age(age)
-                    .salary(salary)
-                    .build()) ;
-        }
+                    Person built = Person.builder()
+                            .name(name)
+                            .age(age)
+                            .salary(salary)
+                            .build();
+
+                    return built;
+                }).limit(size)
+        );
 
         return persons;
     }
