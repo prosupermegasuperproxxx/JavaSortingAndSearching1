@@ -120,10 +120,13 @@ public class ConsoleUI {
                 this.dataArray = dataService.fillRandomly(size).toList();
                 break;
             case "3":
-                System.out.println("Введите имя файла и оставьте пустое. Будет использован файл persons.txt");
+                String[] defFile = {"persons.txt", "evensorttest.txt"};
+                String seldefFile = defFile[1];
+                System.out.println("Введите имя файла и оставьте пустое. Будет использован файл " + seldefFile);
+                
                 String pathToFile = scanner.nextLine();
                 if(pathToFile.trim().isEmpty()){
-                    pathToFile = "persons.txt";
+                    pathToFile = seldefFile;
                 }
                 this.dataArray = dataService.fillFromFile(pathToFile).toList();
                 break;
@@ -204,7 +207,7 @@ public class ConsoleUI {
 
         System.out.println("\n---Array contents---");
         for (int i = 0; i < dataArray.size(); i++){
-            System.out.println(dataArray.get(i));
+            System.out.println("index: "+ i + " | " + dataArray.get(i));
         }
 
     }
@@ -226,7 +229,6 @@ public class ConsoleUI {
         System.out.println("1. Пузырьковая");
         System.out.println("2. Быстрая");
         System.out.println("3. Слияние");
-        System.out.println("4. По четным");
         System.out.println("Выберите: ");
 
 
@@ -242,11 +244,6 @@ public class ConsoleUI {
             case "3":
                 strategy = new MergeSortStrategy<>();
                 break;
-            case "4":
-                // пока нет доделать
-//                strategy = null;
-                throw new UnsupportedOperationException();
-//                break;
             default:
                 System.out.println("Invalid choice.");
                 return;
@@ -262,10 +259,12 @@ public class ConsoleUI {
         System.out.println("2. Age");
         System.out.println("3. Salary");
         System.out.println("4. All Fields. Name->Age->Salary");
+        System.out.println("5. Age Even Only");
         System.out.println("Выберите: ");
 
         fieldChoice = scanner.nextLine();
 
+        java.util.function.Function<Person, Number> getEvenValue = null;
         switch (fieldChoice){
             case "1":
                 strategy.setComparator( new Person.NameComparator());
@@ -280,6 +279,11 @@ public class ConsoleUI {
                // сортирует по всем полям;
                 strategy.setComparator( null);
                 break;
+            case "5":
+                strategy.setComparator( new Person.AgeComparator());
+                getEvenValue = (p) -> p.getAge();
+                System.out.println("Возраст только с чётным значением отсортирован");
+                break;
             default:
                 System.out.println("Invalid choice.");
                 return;
@@ -288,8 +292,10 @@ public class ConsoleUI {
 
         System.out.println("Не сортированный список размер: " + dataArray.size());
 
-        if(sortingService.sortArray(dataArray, strategy.getComparator(), strategy)!=null)
+        if(sortingService.sortArray(dataArray, strategy, getEvenValue)!=null)
             isSorted = true;
+//        бинарный поиск с "5. Age Even Only" сортировкой не сработает
+        if(getEvenValue!=null) isSorted = false;
 
         System.out.println("Отсортированный список размер : " + dataArray.size());
 

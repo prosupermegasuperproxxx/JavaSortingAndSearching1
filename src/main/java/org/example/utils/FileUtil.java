@@ -4,7 +4,10 @@ import org.example.customcollection.CustomList;
 import org.example.model.Person;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class FileUtil {
     /*public static CustomList<Person> readPersonsFromFile(String filename) throws IOException  {
@@ -50,6 +53,36 @@ public class FileUtil {
         }
     }
 
+    /*public CustomList<Person> fillFromFile(String pathToFile) {
+//        CustomList<Person> customList = FileUtil.readPersonsFromFile("persons.txt");
+        try (Stream<String> lines = Files.lines(Paths.get(pathToFile))) {
+            return (CustomList<Person>) lines
+                    .map(line -> line.split(","))
+                    .map(parts ->{
+                        String name = parts[0].trim();
+                        int age = Integer.parseInt(parts[1].trim());
+                        double salary = Double.parseDouble(parts[2].trim());
+
+                        return Person.builder()
+                                .name(name)
+                                .age(age)
+                                .salary(salary)
+                                .build();
+
+                    }).collect(Collectors.collectingAndThen(
+                            Collectors.toList(),
+                            list -> {
+                                CustomList<Person> customList = new CustomList<>();
+                                customList.addAll(list);
+                                return customList;
+                            }
+                    ));
+        }catch (IOException e){
+            System.err.println("File error" + e.getMessage());
+            return new CustomList<>();
+        }
+    }*/
+    
     /*private static CustomList<Person> createManualPersons(int count) {
         CustomList<Person> persons = CustomList.fromStream(
                 java.util.stream.Stream.generate(() -> {

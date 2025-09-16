@@ -2,7 +2,6 @@ package org.example.sort;
 
 import org.example.strategy.SortStrategy;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
