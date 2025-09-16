@@ -1,0 +1,49 @@
+package org.example.sort;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class EvenNumbersNaturalOrder {
+    public static <T> void sortEvenNumbersNaturalOrder(List<T> list, java.util.function.Function<T, Number> getter) {
+        List<Integer> evenIndices = new ArrayList<>();
+        List<T> evenElements = new ArrayList<>();
+
+        // Собираем индексы и элементы с чётными значениями
+        for (int i = 0; i < list.size(); i++) {
+            Number value = getter.apply(list.get(i));
+            if (value instanceof Integer) {
+                if (((Integer) value) % 2 == 0) {
+                    evenIndices.add(i);
+                    evenElements.add(list.get(i));
+                }
+            } else if (value instanceof Double || value instanceof Float) {
+                double val = value.doubleValue();
+                if ((int) val == val && (int) val % 2 == 0) { // проверка, что число целое и чётное
+                    evenIndices.add(i);
+                    evenElements.add(list.get(i));
+                }
+            } else if (value instanceof Long || value instanceof Short || value instanceof Byte) {
+                long val = value.longValue();
+                if (val % 2 == 0) {
+                    evenIndices.add(i);
+                    evenElements.add(list.get(i));
+                }
+            }
+        }
+
+        // Сортируем чётные элементы
+        // тут делаем изменения        
+        evenElements.sort((a, b) -> {
+            Number aVal = getter.apply(a);
+            Number bVal = getter.apply(b);
+            return Double.compare(aVal.doubleValue(), bVal.doubleValue());
+        });
+
+        // Вставляем отсортированные элементы на их места
+        for (int i = 0; i < evenIndices.size(); i++) {
+            int index = evenIndices.get(i);
+            list.set(index, evenElements.get(i));
+        }
+    }
+
+}
