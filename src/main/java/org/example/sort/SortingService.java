@@ -1,8 +1,5 @@
 package org.example.sort;
 
-import org.example.customcollection.CustomList;
-import org.example.model.Person;
-import org.example.search.BinarySearch;
 import org.example.strategy.SortStrategy;
 import org.example.utils.SortTask;
 
@@ -10,10 +7,29 @@ import java.util.Comparator;
 import java.util.List;
 
 public class SortingService {
-    public <T extends Comparable<T>> List<T> sortArray(List<T> list, Comparator<T> comparator, SortStrategy<T> strategy){
-        //public void <T> sortArray(List array, Comparator<Person> comparator) {
-        //Arrays.sort(array, comparator);
+    public <T extends Comparable<T>> List<T> sortArray(List<T> list, SortStrategy<T> strategy, java.util.function.Function<T, Number> getEvenValue) {
 
+        if (getEvenValue != null) {
+            EvenNumbersNaturalOrder.EvenRecord<T> evenRecord = EvenNumbersNaturalOrder.getEvenNumbersRecord(list, getEvenValue);
+
+            // Сортируем чётные элементы
+            sortArray(evenRecord.evenElements, strategy);
+
+            // Вставляем отсортированные элементы на их места
+            for (int i = 0; i < evenRecord.evenIndices.size(); i++) {
+                int index = evenRecord.evenIndices.get(i);
+                list.set(index, evenRecord.evenElements.get(i));
+            }
+
+            return list;
+        }
+
+        List<T> sortedArray = sortArray(list, strategy);
+
+        return sortedArray;
+    }
+
+    public <T extends Comparable<T>> List<T> sortArray(List<T> list, SortStrategy<T> strategy) {
         try {
             System.out.println("Начало сортировки...");
             List<T> sortedList;
@@ -24,18 +40,6 @@ public class SortingService {
             System.out.println("Сортировка завершена");
             System.out.println("Использован алгоритм: " + strategy.getStrategyName());
 
-            //           Person target = new Person.PersonBuilder().age(219).name("Andrew").salary(2576).build();
-
-//            BinarySearch<Person> binarySearch = new BinarySearch<>();
-//
-//            //  чтоб бинарный поиск работал, искать надо тем же компаратором, что и сортировка была
-//            int index = binarySearch.binarySearch((List<Person>) sortedList, target, (Comparator< Person>) strategy.getComparator());
-//
-//            if (index >= 0) {
-//                System.out.println("Person found at index: " + index);
-//            } else {
-//                System.out.println("Person not found.");
-//            }
 
             // Запись в файл (Доп задание 2)
 //            if (getBooleanInput("Записать результат в файл? (y/n): ")) {

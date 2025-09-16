@@ -4,7 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EvenNumbersNaturalOrder {
-    public static <T> void sortEvenNumbersNaturalOrder(List<T> list, java.util.function.Function<T, Number> getter) {
+    
+    public static class EvenRecord<T> {
+        public List<Integer> evenIndices;
+        public List<T> evenElements;
+        
+        public EvenRecord(List<Integer> evenIndices, List<T> evenElements) {
+            this.evenIndices = evenIndices;
+            this.evenElements = evenElements;
+        }
+    }
+    
+    public static <T> EvenRecord<T> getEvenNumbersRecord(List<T> list, java.util.function.Function<T, Number> getter) {
         List<Integer> evenIndices = new ArrayList<>();
         List<T> evenElements = new ArrayList<>();
 
@@ -31,19 +42,8 @@ public class EvenNumbersNaturalOrder {
             }
         }
 
-        // Сортируем чётные элементы
-        // тут делаем изменения        
-        evenElements.sort((a, b) -> {
-            Number aVal = getter.apply(a);
-            Number bVal = getter.apply(b);
-            return Double.compare(aVal.doubleValue(), bVal.doubleValue());
-        });
-
-        // Вставляем отсортированные элементы на их места
-        for (int i = 0; i < evenIndices.size(); i++) {
-            int index = evenIndices.get(i);
-            list.set(index, evenElements.get(i));
-        }
+        return new EvenRecord<>(evenIndices, evenElements);
+        
     }
 
 }

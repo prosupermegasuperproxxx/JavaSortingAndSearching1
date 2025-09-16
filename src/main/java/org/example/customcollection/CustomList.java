@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class CustomList<T> implements Iterable<T>{
+public class CustomList<T> implements Iterable<T> {
 
     public static final int DEFAULT_CAPACITY = 10;
     private Object[] elements;
@@ -17,7 +17,7 @@ public class CustomList<T> implements Iterable<T>{
         this.elements = DEFAULTCAPACITY_EMPTY_ELEMENTDATA; // this.elements = new Object[DEFAULT_CAPACITY];
         this.size = 0;
     }
-    
+
     public CustomList(Collection<? extends T> c) {
         Object[] a = c.toArray();
         if ((size = a.length) != 0) {
@@ -134,14 +134,14 @@ public class CustomList<T> implements Iterable<T>{
         System.arraycopy(a, 0, elementData, s, numNew);
         size = s + numNew;
         return true;
-        
+
     }
-    
+
     public List<T> toList() {
         List<T> arrayList = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             arrayList.add((T) elements[i]);
         }
-        return  arrayList;
+        return arrayList;
     }
 }
