@@ -14,9 +14,6 @@ public class MergeSortStrategy<T extends Comparable<T>> implements SortStrategy<
 
     public void setExecutor(ExecutorService executor) {
         this.executor = executor;
-//        this.executor = Executors.newCachedThreadPool();
-//        this.executor = Executors.newFixedThreadPool(3);
-
     }
 
     @Override
@@ -112,12 +109,10 @@ public class MergeSortStrategy<T extends Comparable<T>> implements SortStrategy<
         }
 
         @Override
-        public int compareTo(QueueElement  o) {
-//            Comparable<T> t = (T) ((QueueElement) o);
-//            return this.list.get(index).compareTo((T) ((QueueElement)t).list.get( ((QueueElement)t).index));
-            
-            return this.list.get(index).compareTo((T) o.list.get(o.getIndex()));
+        public int compareTo(QueueElement o) {
+            throw new IllegalStateException();
         }
+
     }
 
     private List<T> mergeSortedLists(List<List<T>> sortedParts) {
@@ -150,7 +145,8 @@ public class MergeSortStrategy<T extends Comparable<T>> implements SortStrategy<
 
 
     public static <T> List<T> mergeSortRecursive(List<T> list, java.util.Comparator<? super T> comparator) {
-        if (list == null || list.size() <= 1) {
+        if (list == null) throw new NullPointerException("list is null");
+        if (list.size() <= 1) {
             return new ArrayList<>(list);
         }
 

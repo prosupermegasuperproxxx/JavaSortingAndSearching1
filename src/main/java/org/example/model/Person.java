@@ -1,5 +1,7 @@
 package org.example.model;
 
+import java.util.Locale;
+
 public class Person implements Comparable<Person> {
     private final String name;
     private final int age;
@@ -8,17 +10,17 @@ public class Person implements Comparable<Person> {
 
 //    В программе должен использоваться паттерн стратегия.
 //    Для кастомной сортировки разрешено использовать компаратор.
-    public static class AgeComparator implements PersonComparator {
-        @Override
-        public int compare(Person p1, Person p2) {
-            return Integer.compare(p1.getAge(), p2.getAge());
-        }
-    }
-
     public static class NameComparator implements PersonComparator {
         @Override
         public int compare(Person p1, Person p2) {
             return p1.getName().compareTo(p2.getName());
+        }
+    }
+
+    public static class AgeComparator implements PersonComparator {
+        @Override
+        public int compare(Person p1, Person p2) {
+            return Integer.compare(p1.getAge(), p2.getAge());
         }
     }
 
@@ -55,7 +57,7 @@ public class Person implements Comparable<Person> {
 
 
 //    Все классы должны базово реализовывать сортировку по всем 3 полям.
-//    используется если не задан
+//    используется если не задан PersonComparator
     @Override
     public int compareTo(Person other) {
         int nameComparison = this.getName().compareTo(other.getName());
@@ -68,7 +70,7 @@ public class Person implements Comparable<Person> {
 
     @Override
     public String toString() {
-        return String.format("Person{name='%s', age=%d, salary=%.2f}",
+        return String.format(Locale.US,"Person{name='%s', age=%d, salary=%.2f}",
                 name, age, salary);
     }
 
