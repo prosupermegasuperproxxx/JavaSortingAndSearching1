@@ -64,10 +64,10 @@ public class ConsoleUI {
                     break;
                 case "exit"://2.6 выход по слову "exit"
                     isRunning = false;
-                    System.out.println("Bye!");
+                    System.out.println("Пока!");
                     break;
                 default:
-                    System.out.println("Invalid choice.");
+                    System.out.println("Некорректный выбор.");
             }
         }
         scanner.close();
@@ -97,7 +97,7 @@ public class ConsoleUI {
     //2.1 выбор варианта заполнения исходного массива данных (из файла, рандом, вручную)
     //2.5 вопрос о размерности
     private void handleDataInput () {
-        System.out.println("\n--- Datainpit ---");
+        System.out.println("\n--- Способ ввода данных ---");
         System.out.println("1. Вручную");
         System.out.println("2. Случайно");
         System.out.println("3. Из файла");
@@ -108,7 +108,7 @@ public class ConsoleUI {
         isSorted = false;
 
         if(!inputChoice.equals("3")){
-            System.out.println("Enter the size of the array");
+            System.out.println("Введите размер");
             size = Integer.parseInt(scanner.nextLine());
         }
 
