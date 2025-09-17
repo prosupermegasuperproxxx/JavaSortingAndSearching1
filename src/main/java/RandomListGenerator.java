@@ -5,6 +5,63 @@ public class RandomListGenerator {
     static java.text.DecimalFormat df = new java.text.DecimalFormat("#.###", new java.text.DecimalFormatSymbols(Locale.US));
 
     public static void main(String[] args) {
+//        variant1();
+        generateTestList(50);
+    }
+
+    private static void generateTestList(int size) {
+
+        Random random = new Random();
+        String[] names = {"   чётный", "НЕ чётный"};
+        List<String> dataList = new ArrayList<>();
+
+        int max = String.valueOf(size).length();
+
+        int desiredLength = max;
+
+
+        for (int i = 0; i < size; i++) {
+            int i1 = random.nextInt(names.length);
+            int age = random.nextInt(100) + 1;
+            
+            if(i1%2==0) {
+                if (age % 2 != 0)
+                    age++;
+            } else
+            if (age % 2 == 0)
+                age++;
+            
+            String name = names[i1];
+
+            // Используем String.format для заполнения нулями
+            String formattedWord = String.format("%" + desiredLength + "s", String.valueOf(i)).replace(' ', '0');
+
+            double salary = random.nextDouble() * 100000;
+
+            String ds = "";
+            ds = String.format(Locale.US, "%.3f", salary);
+            dataList.add(formattedWord + ": " + name + "," + age + ",\t " + ds);
+
+        }
+
+        // Выводим исходный список
+        System.out.println("Исходный список:");
+        for (String item : dataList) {
+            System.out.println(item);
+        }
+
+        // Перемешиваем список
+        Collections.shuffle(dataList, random);
+
+        // Выводим перемешанный список
+        System.out.println("\nПеремешанный список:");
+        for (String item : dataList) {
+            System.out.println(item);
+        }
+    }
+
+
+    private static void variant1() {
         // Создаём список букв от A до Z
         List<String> letters = new ArrayList<>();
         for (char c = 'A'; c <= 'Z'; c++) {

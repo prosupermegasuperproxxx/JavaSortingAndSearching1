@@ -7,7 +7,29 @@ import java.util.Comparator;
 import java.util.List;
 
 public class SortingService {
-    public <T extends Comparable<T>> List<T> sortArray(List<T> list, Comparator<T> comparator, SortStrategy<T> strategy) {
+    public <T extends Comparable<T>> List<T> sortArray(List<T> list, SortStrategy<T> strategy, java.util.function.Function<T, Number> getEvenValue) {
+
+        if (getEvenValue != null) {
+            EvenNumbersNaturalOrder.EvenRecord<T> evenRecord = EvenNumbersNaturalOrder.getEvenNumbersRecord(list, getEvenValue);
+
+            // Сортируем чётные элементы
+            sortArray(evenRecord.evenElements, strategy);
+
+            // Вставляем отсортированные элементы на их места
+            for (int i = 0; i < evenRecord.evenIndices.size(); i++) {
+                int index = evenRecord.evenIndices.get(i);
+                list.set(index, evenRecord.evenElements.get(i));
+            }
+
+            return list;
+        }
+
+        List<T> sortedArray = sortArray(list, strategy);
+
+        return sortedArray;
+    }
+
+    public <T extends Comparable<T>> List<T> sortArray(List<T> list, SortStrategy<T> strategy) {
         try {
             System.out.println("Начало сортировки...");
             List<T> sortedList;
