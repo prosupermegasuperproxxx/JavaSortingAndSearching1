@@ -18,7 +18,7 @@ import java.util.concurrent.Future;
 
 public class MainTestOnlyLocal {
 
-    private static final Scanner scanner = new Scanner(System.in);
+    public static final Scanner scanner = new Scanner(System.in);
 //    private static Threads<?> sortExecutor;
 
 

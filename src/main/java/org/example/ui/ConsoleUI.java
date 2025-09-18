@@ -13,6 +13,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
+
+
+
 public class ConsoleUI {
     private final Scanner scanner;
     private final DataService dataService;
@@ -60,7 +63,7 @@ public class ConsoleUI {
                     printArray();//2.3 вывод результата, если выбрали консоль
                     break;
                 case "5":
-                    writeToFile();//5.запись файла
+                    handleSaveToFile();//5.запись файла
                     break;
                 case "exit"://2.6 выход по слову "exit"
                     isRunning = false;
@@ -213,13 +216,17 @@ public class ConsoleUI {
     }
 
     //5. запись отсортированной коллекции в файл
-    private void writeToFile() {
-        if(dataArray == null){
-            System.out.println("Array is empty. Please fill up the data.");
-            return;
-        }
-        System.out.println("Write to file functionality not implemented  yet");
+    private void handleSaveToFile() {
+        System.out.print("Введите имя файла для сохранения: ");
+        String filename = scanner.nextLine();
 
+        // Если ваш SortingManager параметризован, нужно привести тип
+        if (sortingService instanceof SortingService) {
+            @SuppressWarnings("unchecked")
+            SortingService manager = (SortingService) sortingService;
+            manager.saveSortedCollectionToFile(filename, dataArray);
+
+        }
     }
 
     //2.4 проверка на поле для сортировки
