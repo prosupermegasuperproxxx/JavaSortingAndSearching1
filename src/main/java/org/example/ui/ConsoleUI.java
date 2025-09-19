@@ -1,5 +1,8 @@
 package org.example.ui;
 
+
+import org.example.counterN.CountNStrategy;
+import org.example.counterN.CounterN;
 import org.example.customcollection.CustomList;
 import org.example.model.Person;
 import org.example.search.SearchService;
@@ -12,8 +15,10 @@ import org.example.strategy.SortStrategy;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
-
-
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 
 public class ConsoleUI {
@@ -25,11 +30,19 @@ public class ConsoleUI {
     private SortStrategy<Person> strategy = null;
     private boolean isSorted = false;
 
+    private final CounterN counterN;
+    private ExecutorService executor;
+
+
     public ConsoleUI () {
         this.scanner = new Scanner(System.in);
         this.dataService = new DataService();
         this.sortingService = new SortingService();
         this.searchService = new SearchService();
+
+        this.counterN=new CounterN();
+        this.executor= Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
     }
 
     //2.1 Вопрос(из файла/вручную/рандомно)
@@ -65,6 +78,10 @@ public class ConsoleUI {
                 case "5":
                     handleSaveToFile();//5.запись файла
                     break;
+                case "6":
+                     //6. подсчет и вывод в консоль элемента N
+                    performAndShowCounting();
+                    break;
                 case "exit"://2.6 выход по слову "exit"
                     isRunning = false;
                     System.out.println("Bye!");
@@ -93,6 +110,10 @@ public class ConsoleUI {
             System.out.println("3. Найти элемент");
         System.out.println("4. Вывести в консоль");
         System.out.println("5. Записать в файл");
+
+        System.out.println("6. Подсчитать количество вхождений элемента N. ");
+
+
         System.out.println("Выход 'exit'");
         System.out.println("Введите ваш выбор:");
     }
@@ -226,6 +247,81 @@ public class ConsoleUI {
             SortingService manager = (SortingService) sortingService;
             manager.saveSortedCollectionToFile(filename, dataArray);
 
+        }
+    }
+
+    //6. подсчет элемента N
+    private void performAndShowCounting() {
+        System.out.println("\n=== Выбор параметра для поиска ===");
+        System.out.println("1. По имени (String)");
+        System.out.println("2. По возрасту (int)");
+        System.out.println("3. По зарплате (double)");
+        System.out.print("Выберите параметр: ");
+
+        int paramChoice = getIntInput();
+
+        Function<Person, ?> fieldExtractor;
+        Object targetValue;
+
+        switch (paramChoice) {
+            case 1:
+                System.out.print("Введите имя для поиска: ");
+                targetValue = scanner.nextLine();
+                fieldExtractor = Person::getName;
+                break;
+
+            case 2:
+                System.out.print("Введите возраст для поиска: ");
+                targetValue = getIntInput();
+                fieldExtractor = Person::getAge;
+                break;
+
+            case 3:
+                System.out.print("Введите зарплату для поиска: ");
+                targetValue = getDoubleInput();
+                fieldExtractor = Person::getSalary;
+                break;
+
+            default:
+                System.out.println("Неверный выбор параметра");
+                return;
+        }
+
+        CountNStrategy countingStrategy =
+                new CountNStrategy(counterN, targetValue, fieldExtractor);
+
+        countingStrategy.setExecutor(executor);
+        countingStrategy.sort(dataArray);
+
+        // Ждем завершения подсчета
+        try {
+            executor.awaitTermination(1, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        // Сразу показываем результат
+        long count = counterN.getCount();
+        System.out.println("Количество вхождений: " + count);
+    }
+
+    private int getIntInput() {
+        while (true) {
+            try {
+                return Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.print("Введите целое число: ");
+            }
+        }
+    }
+
+    private double getDoubleInput() {
+        while (true) {
+            try {
+                return Double.parseDouble(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.print("Введите число: ");
+            }
         }
     }
 

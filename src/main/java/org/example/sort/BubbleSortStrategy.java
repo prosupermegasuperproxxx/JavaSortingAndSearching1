@@ -1,5 +1,6 @@
 package org.example.sort;
 
+import org.example.counterN.CounterN;
 import org.example.strategy.SortStrategy;
 
 import java.util.ArrayList;
@@ -12,10 +13,13 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class BubbleSortStrategy<T extends Comparable<T>> implements SortStrategy<T> {
+
     private ExecutorService executor;
 
     // Если компаратор не задан, используем естественный порядок
     private Comparator<T> comparator = (a, b) -> a.compareTo(b);
+
+
 
     public void setExecutor(ExecutorService executor) {
         this.executor = executor;
