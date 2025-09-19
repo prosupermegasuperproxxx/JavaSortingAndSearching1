@@ -9,9 +9,9 @@ public class Person implements Comparable<Person> {
     public static final int COUNT_COLUMNS = 3;
 
 
-    public static final int DOUBLE_AFTERDOT = 3;
+    public static final int DOUBLE_AFTERDOT = 2;
     // Умножаем на 10^decimalPlaces и округляем до целых
-    private static final long factor = (long) Math.pow(10, DOUBLE_AFTERDOT);
+    private static final long FACTOR = (long) Math.pow(10, DOUBLE_AFTERDOT);
 
 
     //    В программе должен использоваться паттерн стратегия.
@@ -78,13 +78,13 @@ public class Person implements Comparable<Person> {
      @return int
      */
     private static int isAlmostEqual(double a, double b) {
-        return Long.compare(Math.round(a * factor), Math.round(b * factor));
+        return Long.compare(Math.round(a * FACTOR), Math.round(b * FACTOR));
     }
 
     @Override
     public String toString() {
         return String.format(Locale.US, "Person{name='%s', age=%d, salary=%." + DOUBLE_AFTERDOT + "f}",
-                name, age, ((double) Math.round(salary * factor) / factor));
+                name, age, ((double) Math.round(salary * FACTOR) / FACTOR));
     }
 
     public static PersonBuilder builder() {
@@ -116,16 +116,33 @@ public class Person implements Comparable<Person> {
             return new Person(this);
         }
 
-        private void validate() {
-            if (name == null || name.trim().isEmpty()) {
-                throw new IllegalArgumentException("Name cannot be null or empty");
-            }
-            if (age <= 0) {
-                throw new IllegalArgumentException("Age must be positive");
-            }
-            if (salary < 0) {
-                throw new IllegalArgumentException("Salary cannot be negative");
-            }
-        }
+		private void validate() {
+
+			boolean nameInvalid = (name == null || name.trim().isEmpty());
+			boolean ageInvalid = (age < 18 || age > 65);
+			boolean salaryInvalid = (salary < 0 || salary > 1_000_000);
+
+			StringBuilder errors = new StringBuilder();
+
+			if (nameInvalid) {
+				errors.append("Имя не может быть пустым");
+			}
+			if (ageInvalid) {
+				if (errors.length() > 0) errors.append("; ");
+				errors.append("Возраст должен быть от 18 до 65");
+			}
+			if (salaryInvalid) {
+				if (errors.length() > 0) errors.append("; ");
+				errors.append("Зарплата должна быть от 0 до 1000000");
+			}
+
+			if (nameInvalid && ageInvalid && salaryInvalid) {
+				throw new IllegalArgumentException("Все данные некорректны");
+			}
+
+			if (errors.length() > 0) {
+				throw new IllegalArgumentException(errors.toString());
+			}
+		}
     }
 }

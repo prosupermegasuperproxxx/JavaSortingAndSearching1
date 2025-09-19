@@ -1,5 +1,8 @@
 package org.example.ui;
 
+
+import org.example.counterN.CountNStrategy;
+import org.example.counterN.CounterN;
 import org.example.customcollection.CustomList;
 import org.example.model.Person;
 import org.example.search.SearchService;
@@ -12,6 +15,11 @@ import org.example.strategy.SortStrategy;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+
 
 public class ConsoleUI {
     private final Scanner scanner;
@@ -22,11 +30,19 @@ public class ConsoleUI {
     private SortStrategy<Person> strategy = null;
     private boolean isSorted = false;
 
+    private final CounterN counterN;
+    private ExecutorService executor;
+
+
     public ConsoleUI () {
         this.scanner = new Scanner(System.in);
         this.dataService = new DataService();
         this.sortingService = new SortingService();
         this.searchService = new SearchService();
+
+        this.counterN=new CounterN();
+        this.executor= Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
     }
 
     //2.1 Вопрос(из файла/вручную/рандомно)
@@ -36,19 +52,27 @@ public class ConsoleUI {
     public void start(){
         boolean isRunning = true;
 
+        boolean dataArrayIsOK = false;
 
         if(dataArray == null||dataArray.isEmpty()){
             System.out.println("Для начала работы необходимо заполнить массив данных");
-            handleDataInput();
+            dataArrayIsOK = handleDataInput();
         }
 
         while(isRunning){
-            printMainMenu();
-            String choice = scanner.nextLine().trim();
+
+            String choice = null;
+            if(dataArrayIsOK) {
+                printMainMenu();
+                choice = scanner.nextLine().trim();
+            } else {
+                System.out.println("Для начала работы необходимо заполнить массив данных");
+                choice = "1";
+            }
 
             switch (choice){
                 case "1":
-                    handleDataInput();//выбор способа заполнения
+                    dataArrayIsOK = handleDataInput();//выбор способа заполнения
                     break;
                 case "2":
                     handleSorting();//сортировка
@@ -60,14 +84,19 @@ public class ConsoleUI {
                     printArray();//2.3 вывод результата, если выбрали консоль
                     break;
                 case "5":
-                    writeToFile();//5.запись файла
+                    handleSaveToFile();//5.запись файла
+                    break;
+                case "6":
+                     //6. подсчет и вывод в консоль элемента N
+                    performAndShowCounting();
                     break;
                 case "exit"://2.6 выход по слову "exit"
                     isRunning = false;
-                    System.out.println("Bye!");
+                    executor.shutdown();
+                    System.out.println("Пока!");
                     break;
                 default:
-                    System.out.println("Invalid choice.");
+                    System.out.println("Некорректный выбор.");
             }
         }
         scanner.close();
@@ -90,14 +119,18 @@ public class ConsoleUI {
             System.out.println("3. Найти элемент");
         System.out.println("4. Вывести в консоль");
         System.out.println("5. Записать в файл");
+
+        System.out.println("6. Подсчитать количество вхождений элемента N. ");
+
+
         System.out.println("Выход 'exit'");
         System.out.println("Введите ваш выбор:");
     }
 
     //2.1 выбор варианта заполнения исходного массива данных (из файла, рандом, вручную)
     //2.5 вопрос о размерности
-    private void handleDataInput () {
-        System.out.println("\n--- Datainpit ---");
+    private boolean handleDataInput () {
+        System.out.println("\n--- Способ ввода данных ---");
         System.out.println("1. Вручную");
         System.out.println("2. Случайно");
         System.out.println("3. Из файла");
@@ -107,10 +140,11 @@ public class ConsoleUI {
         int size = 0;
         isSorted = false;
 
-        if(!inputChoice.equals("3")){
-            System.out.println("Enter the size of the array");
-            size = Integer.parseInt(scanner.nextLine());
-        }
+        if(!inputChoice.trim().isEmpty())
+            if(!inputChoice.equals("3")){
+                System.out.println("Введите размер");
+                size = Integer.parseInt(scanner.nextLine());
+            }
 
         switch(inputChoice){
             case "1":
@@ -121,7 +155,7 @@ public class ConsoleUI {
                 break;
             case "3":
                 String[] defFile = {"persons.txt", "evensorttest.txt"};
-                String seldefFile = defFile[1];
+                String seldefFile = defFile[0];
                 System.out.println("Введите имя файла и оставьте пустое. Будет использован файл " + seldefFile);
                 
                 String pathToFile = scanner.nextLine();
@@ -132,11 +166,20 @@ public class ConsoleUI {
                 break;
             default:
                 System.out.println("Invalid choice.");
+                
+
         }
 
         if(dataArray != null){
             System.out.println("The array has been filled. Size: " + dataArray.size());
         }
+        
+        boolean ret = dataArray==null;
+        if(ret)
+            return false;
+
+        return !this.dataArray.isEmpty();
+        
     }
 
     //2.7 вопрос о желании найти элемент из консоли
@@ -213,13 +256,92 @@ public class ConsoleUI {
     }
 
     //5. запись отсортированной коллекции в файл
-    private void writeToFile() {
-        if(dataArray == null){
-            System.out.println("Array is empty. Please fill up the data.");
-            return;
-        }
-        System.out.println("Write to file functionality not implemented  yet");
+    private void handleSaveToFile() {
+        System.out.print("Введите имя файла для сохранения: ");
+        String filename = scanner.nextLine();
 
+        // Если ваш SortingManager параметризован, нужно привести тип
+        if (sortingService instanceof SortingService) {
+            @SuppressWarnings("unchecked")
+            SortingService manager = (SortingService) sortingService;
+            manager.saveSortedCollectionToFile(filename, dataArray);
+
+        }
+    }
+
+    //6. подсчет элемента N
+    private void performAndShowCounting() {
+        System.out.println("\n=== Выбор параметра для поиска ===");
+        System.out.println("1. По имени (String)");
+        System.out.println("2. По возрасту (int)");
+        System.out.println("3. По зарплате (double)");
+        System.out.print("Выберите параметр: ");
+
+        int paramChoice = getIntInput();
+
+        Function<Person, ?> fieldExtractor;
+        Object targetValue;
+
+        switch (paramChoice) {
+            case 1:
+                System.out.print("Введите имя для поиска: ");
+                targetValue = scanner.nextLine();
+                fieldExtractor = Person::getName;
+                break;
+
+            case 2:
+                System.out.print("Введите возраст для поиска: ");
+                targetValue = getIntInput();
+                fieldExtractor = Person::getAge;
+                break;
+
+            case 3:
+                System.out.print("Введите зарплату для поиска: ");
+                targetValue = getDoubleInput();
+                fieldExtractor = Person::getSalary;
+                break;
+
+            default:
+                System.out.println("Неверный выбор параметра");
+                return;
+        }
+
+        CountNStrategy countingStrategy =
+                new CountNStrategy(counterN, targetValue, fieldExtractor);
+
+        countingStrategy.setExecutor(executor);
+        countingStrategy.sort(dataArray);
+
+        // Ждем завершения подсчета
+        try {
+            executor.awaitTermination(1, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        // Сразу показываем результат
+        long count = counterN.getCount();
+        System.out.println("Количество вхождений: " + count);
+    }
+
+    private int getIntInput() {
+        while (true) {
+            try {
+                return Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.print("Введите целое число: ");
+            }
+        }
+    }
+
+    private double getDoubleInput() {
+        while (true) {
+            try {
+                return Double.parseDouble(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.print("Введите число: ");
+            }
+        }
     }
 
     //2.4 проверка на поле для сортировки

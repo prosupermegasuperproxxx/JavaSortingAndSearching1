@@ -13,6 +13,14 @@ public class EvenNumbersNaturalOrder {
             this.evenIndices = evenIndices;
             this.evenElements = evenElements;
         }
+
+        public List<Integer> getEvenIndices() {
+            return evenIndices;
+        }
+
+        public List<T> getEvenElements() {
+            return evenElements;
+        }
     }
     
     public static <T> EvenRecord<T> getEvenNumbersRecord(List<T> list, java.util.function.Function<T, Number> getter) {
