@@ -43,6 +43,7 @@ public class IterativeQuickSortStrategy<T extends Comparable<T>> implements Sort
 
             if (left >= right) continue;
 
+//            TODO многопоточность доделать
             // Выполняем разделение в отдельном потоке
             Future<Integer> future = executor.submit(() -> {
                 int pivotIndex = partition(list, left, right);

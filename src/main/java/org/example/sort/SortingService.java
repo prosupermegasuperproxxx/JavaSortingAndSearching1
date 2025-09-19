@@ -1,13 +1,17 @@
 package org.example.sort;
 
+import FileWriter.FileWriterUtil;
 import org.example.strategy.SortStrategy;
 import org.example.utils.SortTask;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 
 public class SortingService {
-    public <T extends Comparable<T>> List<T> sortArray(List<T> list, SortStrategy<T> strategy, java.util.function.Function<T, Number> getEvenValue) {
+    public <T extends Comparable<T>> List<T> sortArray(List<T> list, SortStrategy<T> strategy, Function<T, Number> getEvenValue) {
 
         if (getEvenValue != null) {
             EvenNumbersNaturalOrder.EvenRecord<T> evenRecord = EvenNumbersNaturalOrder.getEvenNumbersRecord(list, getEvenValue);
@@ -53,4 +57,24 @@ public class SortingService {
         }
         return null;
     }
+
+   public void saveSortedCollectionToFile(String filename,List sortedList) {
+        if (sortedList == null || sortedList.isEmpty()) {
+            System.out.println("Нет отсортированной коллекции для сохранения!");
+            return;
+        }
+
+        try {
+            FileWriterUtil.writeCollectionToFile(sortedList, filename);
+            System.out.println("Коллекция успешно сохранена в файл: " + filename);
+        } catch (IOException e) {
+            System.err.println("Ошибка при записи в файл: " + e.getMessage());
+        }
+
+
+    }
+
+
+
+
 }
