@@ -1,0 +1,4 @@
+Person{name='Артем', age=54, salary=1.873}
+Person{name='Андрей', age=5, salary=1.571}
+Person{name='Аслан', age=99, salary=1.208}
+Person{name='Артем', age=53, salary=1.953}
