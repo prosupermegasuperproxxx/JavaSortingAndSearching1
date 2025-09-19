@@ -56,6 +56,7 @@ public class CountNStrategy implements SortStrategy<Person> {
             if (fromIndex < list.size()) {
                 List<Person> subList = list.subList(fromIndex, toIndex);
                 executor.submit(new CountingTask(subList, targetValue, fieldExtractor, counter));
+                
             }
         }
     }

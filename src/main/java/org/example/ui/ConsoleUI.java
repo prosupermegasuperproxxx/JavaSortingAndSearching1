@@ -52,19 +52,27 @@ public class ConsoleUI {
     public void start(){
         boolean isRunning = true;
 
+        boolean dataArrayIsOK = false;
 
         if(dataArray == null||dataArray.isEmpty()){
             System.out.println("Для начала работы необходимо заполнить массив данных");
-            handleDataInput();
+            dataArrayIsOK = handleDataInput();
         }
 
         while(isRunning){
-            printMainMenu();
-            String choice = scanner.nextLine().trim();
+
+            String choice = null;
+            if(dataArrayIsOK) {
+                printMainMenu();
+                choice = scanner.nextLine().trim();
+            } else {
+                System.out.println("Для начала работы необходимо заполнить массив данных");
+                choice = "1";
+            }
 
             switch (choice){
                 case "1":
-                    handleDataInput();//выбор способа заполнения
+                    dataArrayIsOK = handleDataInput();//выбор способа заполнения
                     break;
                 case "2":
                     handleSorting();//сортировка
@@ -84,6 +92,7 @@ public class ConsoleUI {
                     break;
                 case "exit"://2.6 выход по слову "exit"
                     isRunning = false;
+                    executor.shutdown();
                     System.out.println("Пока!");
                     break;
                 default:
@@ -120,7 +129,7 @@ public class ConsoleUI {
 
     //2.1 выбор варианта заполнения исходного массива данных (из файла, рандом, вручную)
     //2.5 вопрос о размерности
-    private void handleDataInput () {
+    private boolean handleDataInput () {
         System.out.println("\n--- Способ ввода данных ---");
         System.out.println("1. Вручную");
         System.out.println("2. Случайно");
@@ -131,10 +140,11 @@ public class ConsoleUI {
         int size = 0;
         isSorted = false;
 
-        if(!inputChoice.equals("3")){
-            System.out.println("Введите размер");
-            size = Integer.parseInt(scanner.nextLine());
-        }
+        if(!inputChoice.trim().isEmpty())
+            if(!inputChoice.equals("3")){
+                System.out.println("Введите размер");
+                size = Integer.parseInt(scanner.nextLine());
+            }
 
         switch(inputChoice){
             case "1":
@@ -145,7 +155,7 @@ public class ConsoleUI {
                 break;
             case "3":
                 String[] defFile = {"persons.txt", "evensorttest.txt"};
-                String seldefFile = defFile[1];
+                String seldefFile = defFile[0];
                 System.out.println("Введите имя файла и оставьте пустое. Будет использован файл " + seldefFile);
                 
                 String pathToFile = scanner.nextLine();
@@ -156,11 +166,20 @@ public class ConsoleUI {
                 break;
             default:
                 System.out.println("Invalid choice.");
+                
+
         }
 
         if(dataArray != null){
             System.out.println("The array has been filled. Size: " + dataArray.size());
         }
+        
+        boolean ret = dataArray==null;
+        if(ret)
+            return false;
+
+        return !this.dataArray.isEmpty();
+        
     }
 
     //2.7 вопрос о желании найти элемент из консоли

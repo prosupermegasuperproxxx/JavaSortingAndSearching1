@@ -9,7 +9,7 @@ public class Person implements Comparable<Person> {
     public static final int COUNT_COLUMNS = 3;
 
 
-    public static final int DOUBLE_AFTERDOT = 3;
+    public static final int DOUBLE_AFTERDOT = 2;
     // Умножаем на 10^decimalPlaces и округляем до целых
     private static final long FACTOR = (long) Math.pow(10, DOUBLE_AFTERDOT);
 

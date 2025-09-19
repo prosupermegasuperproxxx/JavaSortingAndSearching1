@@ -26,7 +26,7 @@ public class DataService<T> {
         try (Stream<String> lines = Files.lines(Paths.get(pathToFile))) {
             return (CustomList<Person>) lines
                     .map(line -> line.split(","))
-                    .map(parts ->{
+                    .map(parts -> {
                         String name = parts[0].trim();
                         int age = Integer.parseInt(parts[1].trim());
                         double salary = Double.parseDouble(parts[2].trim());
@@ -45,10 +45,12 @@ public class DataService<T> {
                                 return customList;
                             }
                     ));
-
-                    //.(Person[]::new);
-        }catch (IOException e){
-            System.err.println("File error" + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.err.println("Файл с ошибками: " + e.getMessage());
+            System.err.println("Выберите другой файл.");
+            return new CustomList<>();
+        } catch (IOException e) {
+            System.err.println("Неизвестная ошибка: " + e.getMessage());
             return new CustomList<>();
         }
     }
@@ -57,36 +59,45 @@ public class DataService<T> {
     //4.3 Валидация данных
     //public Person[] fillManually(int size){
     //доработана для соединения, используется колекция не массив
-    public CustomList<Person> fillManually(int size){
+    public CustomList<Person> fillManually(int size) {
         Scanner scanner = new Scanner(System.in);
-//        Person[] persons = new Person[size];
+        CustomList<Person> persons = new CustomList<Person>();
 //
-//        for (int i = 0; i < size; i++) {
-//            System.out.print("Enter number of items in array: "+i+":");
-//
-//            System.out.println("Name: ");
-//            String name = scanner.nextLine();
-//
-//            System.out.print("Age: ");
-//            int age = Integer.parseInt(scanner.nextLine());
-//
-//            System.out.print("Salary: ");
-//            double salary = Double.parseDouble(scanner.nextLine());
-//
-//            persons[i] = Person.builder()
-//                    .name(name)
-//                    .age(age)
-//                    .salary(salary)
-//                    .build();
-//        }
+        for (int i = 0; i < size; i++) {
+            try {
+                System.out.println("Name: ");
+                String name = scanner.nextLine();
+
+                System.out.print("Age: ");
+                int age = Integer.parseInt(scanner.nextLine());
+
+                System.out.print("Salary: ");
+                double salary = Double.parseDouble(scanner.nextLine());
+
+
+                persons.add(
+                        Person.builder()
+                                .name(name)
+                                .age(age)
+                                .salary(salary)
+                                .build());
+            } catch (Exception e) {
+                System.out.println("Введите корректные данные: " + e.getMessage());
+                i--;
+
+                System.out.println("Do you want to continue? (Y/N)");
+                String s = scanner.nextLine();
+                if (!s.toUpperCase().equals("Y")) {
+                    break;
+                }
+            }
+        }
+        
 //        return persons;
-        CustomList<Person> persons = CustomList.fromStream(
+/*        CustomList<Person> persons = CustomList.fromStream(
                 java.util.stream.Stream.generate(() -> {
                     System.out.println("\nВведите данные Person:");
 
-//                    String name = getStringInput("Имя: ");
-//                    int age = getIntInput("Возраст: ");
-//                    double salary = getDoubleInput("Зарплата: ");
                     System.out.println("Name: ");
                     String name = scanner.nextLine();
 
@@ -103,7 +114,7 @@ public class DataService<T> {
                             .build();
                 }).limit(size)
         );
-        System.out.println("Созданы Persons: " + persons);
+        System.out.println("Созданы Persons: " + persons);*/
         return persons;
     }
 
@@ -117,8 +128,8 @@ public class DataService<T> {
                 Stream.generate(() -> {
 
                     String name = names[random.nextInt(names.length)];
-                    int age = random.nextInt(100) + 1;
-                    double salary = random.nextDouble() + 1;
+                    int age = random.nextInt(47) + 18;
+                    double salary = random.nextDouble() * 1000;
 
                     Person built = Person.builder()
                             .name(name)
