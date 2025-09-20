@@ -48,7 +48,7 @@ public class ListSplitAndMerge {
         list.addAll(result);
     }
 
-    
+
     public static <T> List<List<T>> splitList(List<T> list, int parts) {
         List<List<T>> result = new ArrayList<>();
         int size = list.size();

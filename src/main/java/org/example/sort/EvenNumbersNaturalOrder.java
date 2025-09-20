@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EvenNumbersNaturalOrder {
-    
+
     public static class EvenRecord<T> {
         public final List<Integer> evenIndices;
         public final List<T> evenElements;
-        
+
         public EvenRecord(List<Integer> evenIndices, List<T> evenElements) {
             this.evenIndices = evenIndices;
             this.evenElements = evenElements;
@@ -22,7 +22,7 @@ public class EvenNumbersNaturalOrder {
             return evenElements;
         }
     }
-    
+
     public static <T> EvenRecord<T> getEvenNumbersRecord(List<T> list, java.util.function.Function<T, Number> getter) {
         List<Integer> evenIndices = new ArrayList<>();
         List<T> evenElements = new ArrayList<>();
@@ -51,7 +51,7 @@ public class EvenNumbersNaturalOrder {
         }
 
         return new EvenRecord<>(evenIndices, evenElements);
-        
+
     }
 
 }

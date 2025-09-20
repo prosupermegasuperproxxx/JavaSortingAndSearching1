@@ -82,7 +82,7 @@ public class ConsoleUI {
                     handleSaveToFile();//5.запись файла
                     break;
                 case "6":
-                     //6. подсчет и вывод в консоль элемента N
+                    //6. подсчет и вывод в консоль элемента N
                     performAndShowCounting();
                     break;
                 case "exit"://2.6 выход по слову "exit"
@@ -151,7 +151,7 @@ public class ConsoleUI {
                 String[] defFile = {"persons.txt", "evensorttest.txt"};
                 String seldefFile = defFile[0];
                 System.out.println("Введите имя файла и оставьте пустое. Будет использован файл " + seldefFile);
-                
+
                 String pathToFile = scanner.nextLine();
                 if(pathToFile.trim().isEmpty()){
                     pathToFile = seldefFile;
@@ -160,17 +160,17 @@ public class ConsoleUI {
                 break;
             default:
                 System.out.println("Некорректный выбор.");
-                
+
 
         }
 
         if(dataArray != null){
             System.out.println("The array has been filled. Size: " + dataArray.size());
-            
+
         }
-        
+
         return dataArray != null && (!this.dataArray.isEmpty());
-        
+
     }
 
     //2.7 вопрос о желании найти элемент из консоли
@@ -184,11 +184,11 @@ public class ConsoleUI {
             return;
         }
         String strategyComparatorString = "Name";
-        
+
         String tipDouble = "";
         Comparator<Person> strategyComparator = strategy.getComparator();
 
-        
+
         if(strategyComparator==null || strategyComparator.getClass()==Person.NameComparator.class)
             strategyComparatorString = "Name";
         else if(strategyComparator.getClass()==Person.AgeComparator.class)
@@ -197,7 +197,7 @@ public class ConsoleUI {
             strategyComparatorString = "Salary";
             tipDouble = ". Округлено до знаков: " + Person.DOUBLE_AFTERDOT;
         }
-         
+
         System.out.println("Отcортировано по полю: " + strategyComparatorString + tipDouble);
 
         Person.PersonBuilder targetTemp = Person.builder().age(1).name("A").salary(1);
@@ -218,7 +218,7 @@ public class ConsoleUI {
                     case "Age" :
                         targetTemp.age(Integer.parseInt(temp));
                         break ok;
-                        
+
                     case "Salary" :
                         targetTemp.salary(Double.parseDouble(temp));
                         break ok;
@@ -229,7 +229,7 @@ public class ConsoleUI {
         }
 
         SearchService.searchKey(dataArray, strategyComparator, targetTemp.build());
-        
+
     }
 
     //2.3 вывод результат, если выбрали консоль
@@ -377,7 +377,7 @@ public class ConsoleUI {
                 strategy.setComparator( new Person.SalaryComparator());
                 break;
             case "4":
-               // сортирует по всем полям;
+                // сортирует по всем полям;
                 strategy.setComparator( null);
                 break;
             case "5":

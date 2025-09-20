@@ -40,7 +40,7 @@ public class CustomList<T> implements Iterable<T> {
      return CustomList.fromStream (Arrays.stream(personList.toArray(new Person[0])));
      <br>
      </code>
-     @param stream 
+     @param stream
      @param <T>
      @return
      */

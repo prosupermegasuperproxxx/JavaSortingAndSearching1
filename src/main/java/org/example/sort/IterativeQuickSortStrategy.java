@@ -83,5 +83,5 @@ public class IterativeQuickSortStrategy<T extends Comparable<T>> implements Sort
     public String getStrategyName() {
         return "IterativeQuickSortStrategy";
     }
-    
+
 }

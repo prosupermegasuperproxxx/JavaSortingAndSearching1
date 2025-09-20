@@ -54,7 +54,7 @@ public class CountNStrategy implements SortStrategy<Person> {
 
         List<Future<?>> futures = new ArrayList<>();
 
-        
+
         for (int i = 0; i < numThreads; i++) {
             int fromIndex = i * batchSize;
             int toIndex = (i == numThreads - 1) ? list.size() : (i + 1) * batchSize;

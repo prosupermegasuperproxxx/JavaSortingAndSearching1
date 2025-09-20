@@ -22,8 +22,8 @@ public class BinarySearch<T> {
                 return mid; // key found
         }
         return -(low + 1);  // key not found.
-    }    
-    
+    }
+
     public  int binarySearchFindFirstSlow(int index, List<T> list, T key, Comparator</*? super */T> comparator) {
         while (index > 0) {
             int mid = index-1;

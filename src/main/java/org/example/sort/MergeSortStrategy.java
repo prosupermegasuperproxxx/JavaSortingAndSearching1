@@ -74,7 +74,7 @@ public class MergeSortStrategy<T extends Comparable<T>> implements SortStrategy<
 
         return merged;
     }
-    
+
     @Override
     public String getStrategyName() {
         return "MergeSortStrategy";

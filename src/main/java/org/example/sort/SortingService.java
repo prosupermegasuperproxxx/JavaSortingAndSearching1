@@ -1,6 +1,6 @@
 package org.example.sort;
 
-import org.example.utils.FileWriterUtil;
+import FileWriter.FileWriterUtil;
 import org.example.strategy.SortStrategy;
 import org.example.utils.SortTask;
 
@@ -47,7 +47,7 @@ public class SortingService {
         return null;
     }
 
-   public static void saveSortedCollectionToFile(String filename,List sortedList) {
+    public static void saveSortedCollectionToFile(String filename,List sortedList) {
         if (sortedList == null || sortedList.isEmpty()) {
             System.out.println("Нет отсортированной коллекции для сохранения!");
             return;

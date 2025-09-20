@@ -8,12 +8,12 @@ public interface SortStrategy<T extends Comparable<T>> {
 
     void setExecutor(ExecutorService executor);
 
-    void setComparator(Comparator<T> comparator);  
+    void setComparator(Comparator<T> comparator);
 
     Comparator<T> getComparator();
 
     void sort(List<T> list);
 
     String getStrategyName();
-    
+
 }

@@ -38,7 +38,7 @@ public class Person implements Comparable<Person> {
     }
 
     //7. Класс объекта
-    public Person(PersonBuilder builder) {
+    private Person(PersonBuilder builder) {
         this.name = builder.name;
         this.age = builder.age;
         this.salary = builder.salary;
@@ -69,7 +69,15 @@ public class Person implements Comparable<Person> {
         return isAlmostEqual(this.getSalary(), other.getSalary());
     }
 
-     private static int isAlmostEqual(double a, double b) {
+    /**
+     альтернатива
+     <br>
+     return Double.compare(this.getSalary(), other.getSalary());
+     @param a double
+     @param b double
+     @return int
+     */
+    private static int isAlmostEqual(double a, double b) {
         return Long.compare(Math.round(a * FACTOR), Math.round(b * FACTOR));
     }
 
@@ -108,33 +116,33 @@ public class Person implements Comparable<Person> {
             return new Person(this);
         }
 
-		private void validate() {
+        private void validate() {
 
-			boolean nameInvalid = (name == null || name.trim().isEmpty());
-			boolean ageInvalid = (age < 18 || age > 65);
-			boolean salaryInvalid = (salary < 0 || salary > 1_000_000);
+            boolean nameInvalid = (name == null || name.trim().isEmpty());
+            boolean ageInvalid = (age < 18 || age > 65);
+            boolean salaryInvalid = (salary < 0 || salary > 1_000_000);
 
-			StringBuilder errors = new StringBuilder();
+            StringBuilder errors = new StringBuilder();
 
-			if (nameInvalid) {
-				errors.append("Имя не может быть пустым");
-			}
-			if (ageInvalid) {
-				if (errors.length() > 0) errors.append("; ");
-				errors.append("Возраст должен быть от 18 до 65");
-			}
-			if (salaryInvalid) {
-				if (errors.length() > 0) errors.append("; ");
-				errors.append("Зарплата должна быть от 0 до 1000000");
-			}
+            if (nameInvalid) {
+                errors.append("Имя не может быть пустым");
+            }
+            if (ageInvalid) {
+                if (errors.length() > 0) errors.append("; ");
+                errors.append("Возраст должен быть от 18 до 65");
+            }
+            if (salaryInvalid) {
+                if (errors.length() > 0) errors.append("; ");
+                errors.append("Зарплата должна быть от 0 до 1000000");
+            }
 
-			if (nameInvalid && ageInvalid && salaryInvalid) {
-				throw new IllegalArgumentException("Все данные некорректны");
-			}
+            if (nameInvalid && ageInvalid && salaryInvalid) {
+                throw new IllegalArgumentException("Все данные некорректны");
+            }
 
-			if (errors.length() > 0) {
-				throw new IllegalArgumentException(errors.toString());
-			}
-		}
+            if (errors.length() > 0) {
+                throw new IllegalArgumentException(errors.toString());
+            }
+        }
     }
 }

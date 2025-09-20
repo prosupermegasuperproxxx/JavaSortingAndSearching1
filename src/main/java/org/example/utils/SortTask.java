@@ -12,7 +12,7 @@ public class SortTask<T extends Comparable<T>> implements Callable<List<T>> {
     private final List<T> list;
     private final SortStrategy<T> strategy;
     public static int MINIMUM_THREADS;
-    
+
     public SortTask(List<T> list, SortStrategy<T> strategy) {
         this.list = list;
         this.strategy = strategy;
@@ -31,7 +31,7 @@ public class SortTask<T extends Comparable<T>> implements Callable<List<T>> {
         try {
             strategy.setExecutor(executor);
             strategy.sort(list);
-        } 
+        }
         finally {
             executor.shutdown();
         }
