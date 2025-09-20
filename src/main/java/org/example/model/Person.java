@@ -38,7 +38,7 @@ public class Person implements Comparable<Person> {
     }
 
     //7. Класс объекта
-    private Person(PersonBuilder builder) {
+    public Person(PersonBuilder builder) {
         this.name = builder.name;
         this.age = builder.age;
         this.salary = builder.salary;
@@ -69,15 +69,7 @@ public class Person implements Comparable<Person> {
         return isAlmostEqual(this.getSalary(), other.getSalary());
     }
 
-    /**
-     альтернатива
-     <br>
-     return Double.compare(this.getSalary(), other.getSalary());
-     @param a double
-     @param b double
-     @return int
-     */
-    private static int isAlmostEqual(double a, double b) {
+     private static int isAlmostEqual(double a, double b) {
         return Long.compare(Math.round(a * FACTOR), Math.round(b * FACTOR));
     }
 
