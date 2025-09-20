@@ -4,9 +4,12 @@ import org.example.counterN.CounterN;
 import org.example.model.Person;
 import org.example.strategy.SortStrategy;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 
@@ -49,16 +52,32 @@ public class CountNStrategy implements SortStrategy<Person> {
         int numThreads = Runtime.getRuntime().availableProcessors();
         int batchSize = Math.max(1, list.size() / numThreads);
 
+        List<Future<?>> futures = new ArrayList<>();
+
+        
         for (int i = 0; i < numThreads; i++) {
             int fromIndex = i * batchSize;
             int toIndex = (i == numThreads - 1) ? list.size() : (i + 1) * batchSize;
 
             if (fromIndex < list.size()) {
                 List<Person> subList = list.subList(fromIndex, toIndex);
-                executor.submit(new CountingTask(subList, targetValue, fieldExtractor, counter));
-                
+                Future<?> future = executor.submit(new CountingTask(subList, targetValue, fieldExtractor, counter));
+
+                futures.add(future);
+
             }
         }
+
+        // Ждём завершения всех задач и собираем результаты
+        for (Future<?> future : futures) {
+            try {
+                future.get();
+            } catch (InterruptedException | ExecutionException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("Error during sorting", e);
+            }
+        }
+
     }
 
     @Override

@@ -1,18 +1,15 @@
 package org.example.search;
 
-import org.example.model.Person;
-
 import java.util.Comparator;
 import java.util.List;
 
 public class SearchService {
     /**
      
-     находит пока что один элемент, 
+     находит один элемент, 
      который может быть не единственным, и не является крайним.
-     в случае когда с таким же значением поля есть множество элементов.
-     можно доделать с выводом результата в виде Range ( , )
-     и показывать самый первый крайний сверху.
+     с таким же значением поля возможно множество элементов.
+
      <br/>
      чтоб бинарный поиск работал, искать надо тем же компаратором, что и сортировка была
 
@@ -29,18 +26,21 @@ public class SearchService {
             int index = binarySearch.binarySearch(sortedList, key, comparator);
 
             if (index >= 0) {
-                System.out.println("Person found at index: " + index);
+                System.out.println("Значение найдено, и его индекс: " + index);
                 System.out.println(sortedList.get(index));
                 
                 int left = binarySearch.binarySearchFindFirstSlow(index, sortedList, key, comparator);
                 int right = binarySearch.binarySearchFindLastSlow(index, sortedList, key, comparator);
-                
-                System.out.println("vvvvvvvvvvvvvvvvvvvv");
-                System.out.println(left + ": первый с таким же значением\n" + sortedList.get(left));
-                System.out.println(right + ": последний с таким же значением\n" + sortedList.get(right));
-                System.out.println("^^^^^^^^^^^^^^^^^^^^");
+                if(left != index || right != index) {
+                    System.out.println("vvvvvvvvvvvvvvvvvvvv");
+                    System.out.println("Индекс первого с таким же значением: " + left);
+                    System.out.println(sortedList.get(left));
+                    System.out.println("Индекс последнего с таким же значением: " + right);
+                    System.out.println(sortedList.get(right));
+                    System.out.println("^^^^^^^^^^^^^^^^^^^^");
+                }
             } else {
-                System.out.println("Person not found.");
+                System.out.println("Ничего не найдено.");
             }
 
         return null;

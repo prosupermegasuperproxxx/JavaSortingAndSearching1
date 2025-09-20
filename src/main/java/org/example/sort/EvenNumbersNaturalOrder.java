@@ -6,8 +6,8 @@ import java.util.List;
 public class EvenNumbersNaturalOrder {
     
     public static class EvenRecord<T> {
-        public List<Integer> evenIndices;
-        public List<T> evenElements;
+        public final List<Integer> evenIndices;
+        public final List<T> evenElements;
         
         public EvenRecord(List<Integer> evenIndices, List<T> evenElements) {
             this.evenIndices = evenIndices;
