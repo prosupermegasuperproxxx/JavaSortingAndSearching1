@@ -3,9 +3,7 @@ package org.example.sort;
 import org.example.strategy.SortStrategy;
 
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
 public class IterativeQuickSortStrategy<T extends Comparable<T>> implements SortStrategy<T> {
     private ExecutorService executor;
@@ -26,11 +24,16 @@ public class IterativeQuickSortStrategy<T extends Comparable<T>> implements Sort
     public Comparator<T> getComparator() {
         return this.comparator;
     }
-    
+
     @Override
     public void sort(final List<T> list) {
         if (list == null || list.size() <= 1) return;
 
+        ListSplitAndMerge.multiThreadSort(list,this.executor,this.comparator,IterativeQuickSortStrategy::singleThread);
+
+    }
+
+    private static <T> List<T> singleThread(List<T> list, Comparator<T> comparator) {
         // избежать stack overflow и не использовать рекурсию.        
         // используем стек для хранения подмассивов.
         Deque<Range> stack = new ArrayDeque<>();
@@ -43,26 +46,15 @@ public class IterativeQuickSortStrategy<T extends Comparable<T>> implements Sort
 
             if (left >= right) continue;
 
-//            TODO многопоточность доделать
-            // Выполняем разделение в отдельном потоке
-            Future<Integer> future = executor.submit(() -> {
-                int pivotIndex = partition(list, left, right);
-                return pivotIndex;
-            });        
+            int pivotIndex = partition(list, left, right, comparator);
 
-            try {         
-                int pivotIndex = future.get();
-                stack.push(new Range(left, pivotIndex - 1));
-                stack.push(new Range(pivotIndex + 1, right));
-            } catch (InterruptedException | ExecutionException e) {
-                Thread.currentThread().interrupt();
-                throw new RuntimeException("Сортировка прервана", e);
-            }
+            stack.push(new Range(left, pivotIndex - 1));
+            stack.push(new Range(pivotIndex + 1, right));
         }
-    
+        return list;
     }
 
-    private int partition(List<T> list, int left, int right) {
+    private static <T> int partition(List<T> list, int left, int right, Comparator<T> comparator) {
         T pivot = list.get(right);
         int i = left - 1;
 

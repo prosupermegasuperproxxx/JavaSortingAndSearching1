@@ -3,7 +3,6 @@ package org.example.ui;
 
 import org.example.counterN.CountNStrategy;
 import org.example.counterN.CounterN;
-import org.example.customcollection.CustomList;
 import org.example.model.Person;
 import org.example.search.SearchService;
 import org.example.sort.BubbleSortStrategy;
@@ -17,28 +16,24 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 
 public class ConsoleUI {
     private final Scanner scanner;
-    private final DataService dataService;
-    private final SortingService sortingService;
-    private final SearchService searchService;
+    private final DataService<Person> dataService;
+
     private List<Person> dataArray;
     private SortStrategy<Person> strategy = null;
     private boolean isSorted = false;
 
     private final CounterN counterN;
-    private ExecutorService executor;
+    private final ExecutorService executor;
 
 
     public ConsoleUI () {
         this.scanner = new Scanner(System.in);
-        this.dataService = new DataService();
-        this.sortingService = new SortingService();
-        this.searchService = new SearchService();
+        this.dataService = new DataService<>();
 
         this.counterN=new CounterN();
         this.executor= Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
@@ -140,11 +135,10 @@ public class ConsoleUI {
         int size = 0;
         isSorted = false;
 
-        if(!inputChoice.trim().isEmpty())
-            if(!inputChoice.equals("3")){
-                System.out.println("Введите размер");
-                size = Integer.parseInt(scanner.nextLine());
-            }
+        if(inputChoice.equals("1") || inputChoice.equals("2")){
+            System.out.println("Введите размер");
+            size = getIntInput();
+        }
 
         switch(inputChoice){
             case "1":
@@ -165,20 +159,17 @@ public class ConsoleUI {
                 this.dataArray = dataService.fillFromFile(pathToFile).toList();
                 break;
             default:
-                System.out.println("Invalid choice.");
+                System.out.println("Некорректный выбор.");
                 
 
         }
 
         if(dataArray != null){
             System.out.println("The array has been filled. Size: " + dataArray.size());
+            
         }
         
-        boolean ret = dataArray==null;
-        if(ret)
-            return false;
-
-        return !this.dataArray.isEmpty();
+        return dataArray != null && (!this.dataArray.isEmpty());
         
     }
 
@@ -209,7 +200,7 @@ public class ConsoleUI {
          
         System.out.println("Отcортировано по полю: " + strategyComparatorString + tipDouble);
 
-        Person.PersonBuilder targetTemp = new Person.PersonBuilder().age(1).name("A").salary(1);
+        Person.PersonBuilder targetTemp = Person.builder().age(1).name("A").salary(1);
 
         ok:
         while(true){
@@ -260,13 +251,7 @@ public class ConsoleUI {
         System.out.print("Введите имя файла для сохранения: ");
         String filename = scanner.nextLine();
 
-        // Если ваш SortingManager параметризован, нужно привести тип
-        if (sortingService instanceof SortingService) {
-            @SuppressWarnings("unchecked")
-            SortingService manager = (SortingService) sortingService;
-            manager.saveSortedCollectionToFile(filename, dataArray);
-
-        }
+        SortingService.saveSortedCollectionToFile(filename, dataArray);
     }
 
     //6. подсчет элемента N
@@ -313,12 +298,6 @@ public class ConsoleUI {
         countingStrategy.sort(dataArray);
 
         // Ждем завершения подсчета
-        try {
-            executor.awaitTermination(1, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-
         // Сразу показываем результат
         long count = counterN.getCount();
         System.out.println("Количество вхождений: " + count);
@@ -404,24 +383,23 @@ public class ConsoleUI {
             case "5":
                 strategy.setComparator( new Person.AgeComparator());
                 getEvenValue = (p) -> p.getAge();
-                System.out.println("Возраст только с чётным значением отсортирован");
                 break;
             default:
-                System.out.println("Invalid choice.");
+                System.out.println("Некорректный выбор.");
                 return;
         }
 
 
         System.out.println("Не сортированный список размер: " + dataArray.size());
 
-        if(sortingService.sortArray(dataArray, strategy, getEvenValue)!=null)
+        if(SortingService.sortArray(dataArray, strategy, getEvenValue)!=null)
             isSorted = true;
 //        бинарный поиск с "5. Age Even Only" сортировкой не сработает
         if(getEvenValue!=null) isSorted = false;
 
         System.out.println("Отсортированный список размер : " + dataArray.size());
 
-        System.out.println("The sorted array is: ");
+        System.out.println("Отсортированный массив: ");
         printArray();
     }
 }

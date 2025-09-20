@@ -1,10 +1,8 @@
 package org.example.customcollection;
 
-import FileWriter.FileWriterUtil;
-
-import java.io.IOException;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,6 +33,17 @@ public class CustomList<T> implements Iterable<T> {
         }
     }
 
+    /**
+     <code>
+     List<Person> personList = new ArrayList<>();
+     <br>
+     return CustomList.fromStream (Arrays.stream(personList.toArray(new Person[0])));
+     <br>
+     </code>
+     @param stream 
+     @param <T>
+     @return
+     */
     public static <T> CustomList<T> fromStream(Stream<T> stream) {
         return new CustomList<>(stream.collect(Collectors.toList()));
     }
@@ -124,7 +133,7 @@ public class CustomList<T> implements Iterable<T> {
         Iterable.super.forEach(action);
     }
 
-    public boolean addAll(List<T> list) {
+    public boolean addAll(List<T>/*Collection<? extends T>*/ list) {
         Object[] a = list.toArray();
 
         int numNew = a.length;
@@ -148,5 +157,24 @@ public class CustomList<T> implements Iterable<T> {
         return arrayList;
     }
 
+    public static <T> Collector<T, ?, CustomList<T>> getCollector2() {
+        return Collector.of(
+                CustomList::new,
+                CustomList::add,
+                (left, right) -> { left.addAll(right.toList()); return left; },
+                Collector.Characteristics.IDENTITY_FINISH
+        );
+    }
+
+    public static <T> Collector<T, ?, CustomList<T>> getCollector() {
+        return Collectors.collectingAndThen(
+                Collectors.toList(),
+                list -> {
+                    CustomList<T> customList = new CustomList<>();
+                    customList.addAll(list);
+                    return customList;
+                }
+        );
+    }
 
 }
