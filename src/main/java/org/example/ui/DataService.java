@@ -20,7 +20,7 @@ public class DataService<T> {
     //6. Заполнение коллекции в стриме
 
     //Доделать под коллекцию
-    public CustomList<Person> fillFromFile(String pathToFile) {
+    public static CustomList<Person> fillFromFile(String pathToFile) {
         try (Stream<String> lines = Files.lines(Paths.get(pathToFile))) {
 
             return CustomList.fromStream(
@@ -48,7 +48,7 @@ public class DataService<T> {
     //6. Заполнение коллекции в стриме
 
     //доработана для соединения, используется колекция не массив
-    public CustomList<Person> fillManually(int size) {
+    public static CustomList<Person> fillManually(int size) {
         Scanner scanner = new Scanner(System.in);
 
         List<Person> personList = new ArrayList<>();
@@ -89,7 +89,7 @@ public class DataService<T> {
 
     //2.1 Заполнение рандомно
     //4.3 Валидация данных
-    public CustomList<Person> fillRandomly(int size) {
+    public static CustomList<Person> fillRandomly(int size) {
         Random random = new Random();
         String[] names = {"Артем", "Андрей", "Аслан", "Анна"};
 
