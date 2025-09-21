@@ -1,0 +1,10 @@
+Person{name='Андрей', age=54, salary=609.76}
+Person{name='Андрей', age=19, salary=976.63}
+Person{name='Анна', age=32, salary=48.08}
+Person{name='Анна', age=60, salary=871.73}
+Person{name='Анна', age=25, salary=440.01}
+Person{name='Артем', age=40, salary=668.58}
+Person{name='Артем', age=42, salary=442.04}
+Person{name='Аслан', age=61, salary=399.83}
+Person{name='Аслан', age=34, salary=361.35}
+Person{name='Аслан', age=28, salary=609.99}
