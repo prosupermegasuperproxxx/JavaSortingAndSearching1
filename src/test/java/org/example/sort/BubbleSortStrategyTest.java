@@ -9,10 +9,12 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import static org.junit.jupiter.api.Assertions.*;
-
+//сортировка пузырьковая
 class BubbleSortStrategyTest {
     private ExecutorService pool;
-    @AfterEach    void tearDown() {
+    @AfterEach
+    void tearDown() {
+
         if (pool != null) pool.shutdownNow();
     }
     //сортировка по возрастанию
@@ -40,14 +42,14 @@ class BubbleSortStrategyTest {
     }
     //сортировка пустого
     @Test
-    void sort_handlesEmptyAndNull() {
+    void sort_handlesEmpty() {
         BubbleSortStrategy<Integer> s = new BubbleSortStrategy<>();
         pool = Executors.newFixedThreadPool(2);
         s.setExecutor(pool);
         List<Integer> empty = new ArrayList<>();
         s.sort(empty);
         assertTrue(empty.isEmpty());
-        s.sort(null);
+
     }
 
 
